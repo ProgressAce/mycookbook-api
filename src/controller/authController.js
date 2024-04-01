@@ -14,7 +14,12 @@ const user_registration = async (req, res) => {
     const { password, confirmedPwd } = req.body;
 
     // all args from req.body expected to be validated with authentication
-    // Middleware validation.
+    console.log('userRegistration route');
+
+    // if validation middleware for this endpoint found an issue
+    if (req.error) {
+        return res.status(req.status).json({error: req.error});
+    }
 
     let hashedPwd = null;
     if (password === confirmedPwd) {
@@ -43,7 +48,9 @@ const user_registration = async (req, res) => {
         return res.status(500).json({error: 'Server-side error trying to register new user'});
     }
 
-    res.status(201).json({message: 'User registered successfully.', friendlyId});
+    res.status(201).json({
+        message: 'User registered successfully.', userId: result.insertedId
+    });
 }
 
 module.exports = {
