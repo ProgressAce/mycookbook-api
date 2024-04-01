@@ -28,22 +28,11 @@ const user_registration = async (req, res) => {
         return res.status(400).json({error: 'Password and confirmed passsword do not match'});
     }
 
-    const friendlyId = authService.generateFriendlyId(username);
-
-    let hashedFriendlyId = null;
-    try {
-        hashedFriendlyId = bcrypt.hashSync(friendlyId, 10);
-    } catch (error) {
-        console.log(`Error while hashing friendly ID: ${error}`);
-        return res.status(500).json({error: `Error while hashing friendly ID: ${error}`});
-    }
-
     const user = {
         name,
         username,
         email,
         hashedPwd,
-        hashedFriendlyId,
         role: 'normal',
         createdAt: new Date(),
         updatedAt: new Date(),

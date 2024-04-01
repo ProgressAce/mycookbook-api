@@ -91,25 +91,6 @@ async function findUser(email) {
 }
 
 /**
- * Generates a friendly ID for a user, based off their username.
- * the username removes all special characters and converts all
- * uppercase to lowercase.
- * `username` is expected to be validated beforehand.
- * @param {String} username the username of the user.
- */
-function generateFriendlyId(username) {
-    try {
-        const cleanUsername = username.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const randomString = Math.random().toString(36).substring(2, 7);
-        
-        return `${cleanUsername}-${randomString}`;
-    } catch (error) {
-        console.log(`Error while generating a friendly ID: ${error}`);
-        return null;
-    }
-}
-
-/**
  * Inserts one user into the database.
  * @param {Object} userInfo the information of the new user.
  */
@@ -118,27 +99,10 @@ async function insertUser(userInfo) {
     return result;
 }
 
-/* 
-Could you give me a breakdown of how I would implement the schema 
-validation and if it is preferred? Also would it be wise to make the 
-recipe collection have these fields: name, ingredients, cooking-time, 
-and instructions; the 'instructions' field being a large string text 
-with all the instructions of making the recipe? Another thing I would 
-like to know is about the ObjectIds generated for each user and recipe 
-record. Earlier, I inquired about them and you said that the front-end 
-does not usually deal with the ObjectId of a record as it would introduce 
-a security issue in accessing a record directly from the database. Thus, 
-instead of returning a user or record's id, should I instead generate a 
-friendly-user id t give to the front-end to handle. What is usually the 
-best practice of a back-end API giving the front-end a record's id to use 
-on the front-end side?
- */
-
 module.exports = {
     isValidEmail,
     isValidPassword,
     findUser,
-    generateFriendlyId,
     insertUser
 }
 
