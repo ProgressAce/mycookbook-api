@@ -1,6 +1,6 @@
 // Express server of API
 const express = require('express');
-const authRoutes = require('./routes/auth_routes');
+const authRoutes = require('./routes/authRoutes');
 const dbClient = require('./utils/db').dbClient;
 require('dotenv').config();
 
@@ -17,7 +17,8 @@ async function startServer() {
     try {
         await dbClient.connect();
         app.listen(PORT, () => {
-            console.log(`API listening on port ${PORT}`);
+            console.log(`API listening on port ${PORT}`,
+                        '\n========== ==========');
         });
     } catch (err) {
         console.log(`Error starting server: ${err.message}`);
