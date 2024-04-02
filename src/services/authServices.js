@@ -82,12 +82,15 @@ function isValidPassword(password) {
 }
 
 /**
- * Searches for an existing user with the given email.
- * @param {String} email unique email used to find an existing user
- * @returns the user if found, otherwise null.
- */
-async function findUser(email) {
-    return await dbClient.findUser('email', email);
+* Searches for an existing user with the given identifier.
+* A query to find a user, is constructed by dynamically setting the field
+* and value of the field.
+* @param {String} identifier the identifier to find a user with, eg. id, email, username
+* @param {String} field a field used to uniquely find a user with. 
+* @returns the user if found, otherwise null.
+*/
+async function findUser(identifier, field) {
+    return await dbClient.findUser(identifier, field);
 }
 
 /**
