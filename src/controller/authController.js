@@ -50,7 +50,7 @@ const userRegistration = async (req, res) => {
 
     req.session.authenticated = true;
     req.session.user = {
-        usersame: user.username, role: user.role
+        id: result.insertedId, usersame: user.username, role: user.role
     }
 
     res.status(201).json({
@@ -92,7 +92,7 @@ const userLogin = async (req, res) => {
 
     req.session.authenticated = true;
     req.session.user = {
-        usersame: user.username, role: user.role
+        id: user._id, usersame: user.username, role: user.role
     }
     
     res.status(200).json({message: 'Login successful.'});
