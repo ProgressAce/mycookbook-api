@@ -1,5 +1,4 @@
 // defining middleware operations for all auth needs
-const express = require('express');
 const dbClient = require('../utils/db.js').dbClient;
 const authService = require('../services/authServices.js');
 
@@ -12,11 +11,11 @@ const authService = require('../services/authServices.js');
  * @returns appropriate status code and messages for invalid input
  *          given by the user.
  */
-const validateRegistrationInput = async (req, res, next) => {
+const validateRegistration = async (req, res, next) => {
     const { name, username, email } = req.body;
     const { password, confirmedPwd } = req.body;
     let user = null;
-        
+
     // validate arguments from the request body 
     if (!name) {  
         req.status = 400;
@@ -73,12 +72,12 @@ const validateRegistrationInput = async (req, res, next) => {
         next();
         return;
     }
-        
+
     const validEmail = await authService.isValidEmail(email);
     if (!validEmail.valid) {
         req.status = 400;
-        req.error = `Please provide a valid email address, ',
-                    reason: ${validEmail.validators[validEmail.reason].reason}`;
+        req.error = 'Please provide a valid email address.  Reason: ' +
+                    validEmail.validators[validEmail.reason].reason;
         next();
         return;
     }
@@ -91,7 +90,7 @@ const validateRegistrationInput = async (req, res, next) => {
     }
 
     // look for existing email
-    user = await authService.findUser(email);
+    user = await authService.findUser('email', email);
     if (user) {
         req.status = 409;
         req.error = 'User with this email already exists.';
@@ -101,6 +100,48 @@ const validateRegistrationInput = async (req, res, next) => {
     next();
 }
 
+/**
+ * Validates the request body for proper user login.
+ * 
+ * Any misinformation or errors are responded with accordingly.
+ * @param {Request} req the http request
+ * @param {Response} res the http response
+ * @param {import('express').NextFunction} next callback to the next middleware
+ */
+const validateLogin = async (req, res, next) => {
+    const { username, email, password } = req.body;
+
+    if (req.session.authenticated) {
+        next();
+        return;
+    }
+
+    if (!email && !username) {
+        req.status = 400;
+        req.error = 'Please enter your email or username.';
+        next();
+        return;
+    }
+
+    if (!password) {
+        req.status = 400;
+        req.error = 'Please enter your password.';
+        next();
+        return;
+    }
+
+    // if both are given then the username is used for identifying the user
+    if (email) {
+        req.field = 'email';
+        req.identifier = email;
+    } else {
+        req.field = 'username';
+        req.identifier = username;
+    }
+    next();
+}
+
 module.exports = {
-    validateRegistrationInput
+    validateRegistration,
+    validateLogin
 }
