@@ -2,16 +2,19 @@
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
 const dbClient = require('./utils/db').dbClient;
-require('dotenv').config();
+const configSession = require('./middleware/session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(configSession.configSession);
+app.use('/api/v1', authRoutes);
+
 app.get('/', (req, res) => {
     res.json({message: 'Heard and responded'});
 });
-
-app.use('/api/v1', authRoutes);
 
 async function startServer() {
     try {
