@@ -12,4 +12,7 @@ router.post('/auth/register',
 router.post('/auth/login',
             authMiddleware.validateLogin, authController.userLogin);
 
+router.post('/auth/login',
+            authController.userLogin, authMiddleware.validateLogin);
+
 module.exports = router;
